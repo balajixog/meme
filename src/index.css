@@ -74,6 +74,8 @@ header>img{
 
   position: absolute;
   cursor: move;
+  touch-action: none;  /* stop scrolling when dragging on mobile */
+  user-select: none;   /* stop text selection while dragging */
   /* left: 50%;
   transform: translateX(-50%); */
   width: calc(100% - 24px);

@@ -54,55 +54,121 @@ export default function Main(){
             }
           ))
          }
+// useEffect(() => {
+//     function makeDraggable(element) {
+//       if (!element) return;
+
+//       let offsetX = 0;
+//       let offsetY = 0;
+
+//       const onMouseDown = (e) => {
+//         e.preventDefault()
+//      //   element.style.transform = "none";   // stop centering with transform so our math is correct
+//         const rect = element.getBoundingClientRect();
+//         const parentRect = element.parentElement.getBoundingClientRect();
+
+//         offsetX = e.clientX - rect.left;
+//         offsetY = e.clientY - rect.top;
+//         const onMouseMove = (moveEvent) => {
+//           const x = moveEvent.clientX - parentRect.left - offsetX;
+//           const y = moveEvent.clientY - parentRect.top - offsetY;
+
+//           element.style.left = `${x}px`;
+//           element.style.top = `${y}px`;
+//         };
+
+//         const onMouseUp = () => {
+//           document.removeEventListener("mousemove", onMouseMove);
+//           document.removeEventListener("mouseup", onMouseUp);
+//         };
+
+//         document.addEventListener("mousemove", onMouseMove);
+//         document.addEventListener("mouseup", onMouseUp);
+//       };
+
+//       element.addEventListener("mousedown", onMouseDown);
+
+//       // cleanup for this element
+//       return () => {
+//         element.removeEventListener("mousedown", onMouseDown);
+//       };
+//     }
+
+//     const cleanups = [];
+//     if (topTextRef.current) cleanups.push(makeDraggable(topTextRef.current));
+//     if (bottomTextRef.current) cleanups.push(makeDraggable(bottomTextRef.current));
+
+//     // cleanup when component unmounts
+//     return () => {
+//       cleanups.forEach(fn => fn && fn());
+//     };
+//   }, []);   
 useEffect(() => {
-    function makeDraggable(element) {
-      if (!element) return;
+  function makeDraggable(element) {
+    if (!element) return;
 
-      let offsetX = 0;
-      let offsetY = 0;
+    let offsetX = 0;
+    let offsetY = 0;
+    let parentRect = null;
 
-      const onMouseDown = (e) => {
-        e.preventDefault()
-     //   element.style.transform = "none";   // stop centering with transform so our math is correct
-        const rect = element.getBoundingClientRect();
-        const parentRect = element.parentElement.getBoundingClientRect();
+    const onPointerDown = (e) => {
+      e.preventDefault();
 
-        offsetX = e.clientX - rect.left;
-        offsetY = e.clientY - rect.top;
-        const onMouseMove = (moveEvent) => {
-          const x = moveEvent.clientX - parentRect.left - offsetX;
-          const y = moveEvent.clientY - parentRect.top - offsetY;
+      // So all further events for this pointer go to this element
+      if (element.setPointerCapture) {
+        element.setPointerCapture(e.pointerId);
+      }
 
-          element.style.left = `${x}px`;
-          element.style.top = `${y}px`;
-        };
+      const rect = element.getBoundingClientRect();
+      parentRect = element.parentElement.getBoundingClientRect();
 
-        const onMouseUp = () => {
-          document.removeEventListener("mousemove", onMouseMove);
-          document.removeEventListener("mouseup", onMouseUp);
-        };
+      offsetX = e.clientX - rect.left;
+      offsetY = e.clientY - rect.top;
 
-        document.addEventListener("mousemove", onMouseMove);
-        document.addEventListener("mouseup", onMouseUp);
+      // Make sure we are using top/left (not bottom)
+      element.style.position = "absolute";
+      element.style.bottom = "auto";
+
+      const onPointerMove = (moveEvent) => {
+        moveEvent.preventDefault();
+
+        const x = moveEvent.clientX - parentRect.left - offsetX;
+        const y = moveEvent.clientY - parentRect.top - offsetY;
+
+        element.style.left = `${x}px`;
+        element.style.top = `${y}px`;
       };
 
-      element.addEventListener("mousedown", onMouseDown);
-
-      // cleanup for this element
-      return () => {
-        element.removeEventListener("mousedown", onMouseDown);
+      const onPointerUp = (upEvent) => {
+        if (element.releasePointerCapture) {
+          element.releasePointerCapture(upEvent.pointerId);
+        }
+        document.removeEventListener("pointermove", onPointerMove);
+        document.removeEventListener("pointerup", onPointerUp);
+        document.removeEventListener("pointercancel", onPointerUp);
       };
-    }
 
-    const cleanups = [];
-    if (topTextRef.current) cleanups.push(makeDraggable(topTextRef.current));
-    if (bottomTextRef.current) cleanups.push(makeDraggable(bottomTextRef.current));
-
-    // cleanup when component unmounts
-    return () => {
-      cleanups.forEach(fn => fn && fn());
+      document.addEventListener("pointermove", onPointerMove);
+      document.addEventListener("pointerup", onPointerUp);
+      document.addEventListener("pointercancel", onPointerUp);
     };
-  }, []);   
+
+    element.addEventListener("pointerdown", onPointerDown);
+
+    return () => {
+      element.removeEventListener("pointerdown", onPointerDown);
+    };
+  }
+
+  const cleanups = [];
+  if (topTextRef.current) cleanups.push(makeDraggable(topTextRef.current));
+  if (bottomTextRef.current) cleanups.push(makeDraggable(bottomTextRef.current));
+
+  return () => {
+    cleanups.forEach((fn) => fn && fn());
+  };
+}, []);
+
          
     return(
         <main >
