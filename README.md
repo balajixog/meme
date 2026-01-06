@@ -1,12 +1,72 @@
-# React + Vite
+# Meme Generator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React application that allows users to create custom memes by adding text to random meme templates and downloading them as images.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Random meme template generation from Imgflip API
+- Custom top and bottom text inputs
+- Draggable text positioning (desktop and mobile support)
+- Download memes as PNG images
+- Real-time text updates
+- Touch-friendly interface
 
-## Expanding the ESLint configuration
+## Installation
+```bash
+npm install react react-dom html2canvas
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Usage
+
+1. Enter text in the top and bottom input fields
+2. Click "Get a new meme image" for a random template
+3. Drag text elements to reposition them
+4. Click "download meme image" to save your creation
+
+## Technologies
+
+- React
+- html2canvas
+- Imgflip API
+- Pointer Events API
+
+## Project Structure
+```
+src/
+├── components/
+│   └── Main.jsx
+├── App.jsx
+└── index.css
+```
+
+## API
+
+Uses Imgflip API: `https://api.imgflip.com/get_memes`
+
+## Browser Support
+
+Requires modern browser with ES6+, Canvas API, and Pointer Events support.
+## Known Limitations
+
+- Downloaded images may have quality limitations based on source template
+- Text positioning resets when changing meme template
+- CORS must be supported by the image source
+
+## Future Enhancements
+
+- Text size and color customization
+- Font selection
+- Multiple text fields
+- Save favorite memes
+- Share to social media
+- Text stroke/outline options
+
+## License
+
+Available for educational and personal use.
+
+## Acknowledgments
+
+- Imgflip API for meme templates
+- html2canvas library for image capture
+- React team for the framework
