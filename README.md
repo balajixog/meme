@@ -39,7 +39,7 @@ cd meme
 #install dependencies
 npm install react react-dom html2canvas
 
-# Start development server
+# Start 
 npm run dev
 ```
 
