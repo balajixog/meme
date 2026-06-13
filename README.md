@@ -102,9 +102,9 @@ Requires modern browser with ES6+, Canvas API, and Pointer Events support.
 - Text stroke/outline options
 
 ---
-## License
+## MIT License
 
-Available for educational and personal use.
+Available 
 
 ---
 ## Acknowledgments
